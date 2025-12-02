@@ -1,58 +1,65 @@
-# Awesome AI Evaluation Guide
+# Awesome AI Evaluation Guide [![Awesome](https://awesome.re/badge.svg)](https://awesome.re)
 
 [![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey.svg)](http://creativecommons.org/publicdomain/zero/1.0/)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](CONTRIBUTING.md)
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 
+> A comprehensive collection of evaluation methods, tools, and frameworks for assessing Large Language Models (LLMs), RAG systems, and AI agents in real-world applications.
+
 ## About This Guide
 
-A comprehensive guide for evaluating Large Language Models (LLMs) with practical implementations and clear guidance on metric selection.
+This repository provides practical implementations and detailed guidance for evaluating AI systems, with a focus on understanding when and how to apply different evaluation methods. Unlike simple metric collections, we offer working code, mathematical foundations, and domain-specific considerations.
 
-### What This Repository Provides
+### What Makes This Guide Different
 
-- **Working Code Examples**: Complete implementations of evaluation metrics
-- **Mathematical Foundations**: Understanding the theory behind each metric
-- **Metric Selection Guidance**: When and why to use each evaluation method
-- **Domain-Specific Considerations**: Tailored approaches for different applications
-- **Observability Tools**: Integration with monitoring platforms
+- **Implementation-First**: Every metric includes complete, tested code examples
+- **Decision Frameworks**: Clear tables and guides for metric selection
+- **Mathematical Rigor**: Understanding the theory behind each evaluation method
+- **Domain Expertise**: Tailored approaches for medical, legal, financial, and other specialized applications
+- **System-Level Thinking**: Evaluation of components and their interactions
 
-### Key Concepts from Recent Research
+### Key Research Insights
 
-| Concept | Finding | Source | Implication |
-|---------|---------|--------|-------------|
-| Consistency vs Accuracy | Models can show high accuracy with low consistency | SCORE (NVIDIA 2025) | Evaluate both dimensions |
-| Pass@k vs Pass^k | Different metrics measure different aspects | Code generation research | Choose based on use case |
-| Confidence Scoring | Ensemble methods show correlation with accuracy | Industry studies | Consider multiple approaches |
-| System Evaluation | Component interactions affect overall performance | RAG research | Evaluate holistically |
-
-### Repository Structure
-
-This guide organizes evaluation methods into clear categories with practical implementations for each.
+| Concept | Finding | Source | Application |
+|---------|---------|--------|------------|
+| **Consistency vs Accuracy** | Models can have high accuracy but low consistency | SCORE (NVIDIA 2025) | Evaluate reliability alongside correctness |
+| **Pass@k vs Pass^k** | Metrics measure different aspects (optimistic vs reliable) | Code generation research | Choose based on deployment needs |
+| **Confidence Scoring** | Ensemble methods correlate better with accuracy than logprobs | Industry studies | Use majority voting for confidence |
+| **Component Interaction** | System performance ≠ sum of component performance | RAG research | Evaluate end-to-end and per-component |
+| **Bias Detection** | Bayes Factors superior to p-values | QuaCer-B research | Use Bayesian methods for statistical rigor |
 
 ---
 
 ## Table of Contents
 
-- [Quick Start](#quick-start)
-- [Evaluation Metrics](#evaluation-metrics)
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+  - [Quick Examples](#quick-examples)
+  - [Metric Selection Guide](#metric-selection-guide)
+- [Evaluation Methods](#evaluation-methods)
   - [Traditional Metrics](#traditional-metrics)
   - [Modern Metrics](#modern-metrics)
-    - [Consistency & Robustness (SCORE)](#consistency--robustness-score)
-    - [Probability-Based Metrics](#probability-based-metrics)
-    - [LLM-as-a-Judge](#llm-as-a-judge)
-  - [Production Metrics](#production-metrics)
-    - [Confidence Scoring](#confidence-scoring)
-    - [Calibration Methods](#calibration-methods)
-  - [Safety & Bias](#safety--bias)
-    - [Hallucination Detection](#hallucination-detection)
-    - [Bias Detection](#bias-detection)
+  - [Confidence & Calibration](#confidence--calibration)
+  - [Safety & Bias Detection](#safety--bias-detection)
 - [Domain-Specific Evaluation](#domain-specific-evaluation)
   - [RAG Systems](#rag-systems)
   - [Code Generation](#code-generation)
   - [Multi-Agent Systems](#multi-agent-systems)
-- [Tools & Frameworks](#tools--frameworks)
+  - [Medical & Healthcare](#medical--healthcare)
+  - [Legal & Compliance](#legal--compliance)
+- [Tools & Platforms](#tools--platforms)
+  - [Open Source Frameworks](#open-source-frameworks)
+  - [Observability Platforms](#observability-platforms)
+  - [Commercial Solutions](#commercial-solutions)
 - [Benchmarks & Datasets](#benchmarks--datasets)
-- [Production Best Practices](#production-best-practices)
+  - [General Benchmarks](#general-benchmarks)
+  - [Domain Benchmarks](#domain-benchmarks)
+  - [Safety Benchmarks](#safety-benchmarks)
+- [Implementation Guide](#implementation-guide)
+  - [Best Practices](#best-practices)
+  - [Performance Optimization](#performance-optimization)
+  - [Common Pitfalls](#common-pitfalls)
+- [Resources](#resources)
 - [Contributing](#contributing)
 - [Citation](#citation)
 
@@ -84,7 +91,14 @@ This guide organizes evaluation methods into clear categories with practical imp
 | **Creative Writing** | Diversity score | > 0.6 | Avoid repetition |
 | **Education** | Answer correctness | > 0.85 | Learning outcomes |
 
-## Quick Start
+## Getting Started
+
+### Prerequisites
+
+- Python 3.8+ for evaluation frameworks
+- Node.js 14+ for JavaScript-based tools (optional)
+- API keys for LLM providers (OpenAI, Anthropic, etc.)
+- Docker for self-hosted solutions (optional)
 
 ### Installation
 
@@ -93,14 +107,18 @@ This guide organizes evaluation methods into clear categories with practical imp
 git clone https://github.com/hparreao/Awesome-AI-Evaluation-Guide.git
 cd Awesome-AI-Evaluation-Guide
 
-# Install dependencies
+# Install core dependencies
 pip install -r requirements.txt
+
+# Optional: Install specific evaluation frameworks
+pip install deepeval ragas langfuse trulens-eval  # Python frameworks
+npm install -g promptfoo  # JavaScript CLI tool (optional)
 ```
 
-### Basic Usage Example
+### Quick Examples
 
+#### Basic LLM Evaluation
 ```python
-# Example: Evaluating text generation quality
 from examples.llm_as_judge import evaluate_response
 
 result = evaluate_response(
@@ -108,9 +126,29 @@ result = evaluate_response(
     response="Paris is the capital of France.",
     criteria="factual_accuracy"
 )
+print(f"Score: {result.score}, Reasoning: {result.reasoning}")
+```
 
-print(f"Score: {result.score}")
-print(f"Reasoning: {result.reasoning}")
+#### RAG Pipeline Evaluation
+```python
+from ragas import evaluate
+from ragas.metrics import faithfulness, answer_relevancy
+
+# Evaluate your RAG system
+result = evaluate(
+    dataset=your_test_data,
+    metrics=[faithfulness, answer_relevancy]
+)
+print(f"Faithfulness: {result['faithfulness']:.2f}")
+```
+
+#### Consistency Testing (SCORE Framework)
+```python
+from examples.consistency_robustness.score_framework import SCOREEvaluator
+
+evaluator = SCOREEvaluator(model=your_model, k=5)
+metrics = evaluator.evaluate(test_cases)
+print(f"Accuracy: {metrics.accuracy:.2f}, Consistency: {metrics.consistency_rate:.2f}")
 ```
 
 ---
@@ -448,16 +486,6 @@ These metrics measure different aspects of code generation performance and serve
 | **Pass@k** | At least one of k solutions passes | `1 - C(n-c,k)/C(n,k)` | Benchmark comparison |
 | **Pass^k** | All k solutions pass | `p^k` | Reliability planning |
 
-##### Practical Example
-
-For a model with 70% individual success rate:
-
-| k | Pass@k | Pass^k | Gap | Interpretation |
-|---|--------|--------|-----|----------------|
-| 1 | 70% | 70% | 0% | Single attempt baseline |
-| 3 | 97% | 34% | 63% | Large gap between metrics |
-| 5 | 99% | 17% | 82% | Gap increases with k |
-
 ##### When to Use Each
 
 **Use Pass@k for:**
@@ -508,35 +536,45 @@ Evaluation challenges unique to autonomous and cooperative agents.
 
 ---
 
-## Tools & Frameworks
+## Tools & Platforms
 
-### Open Source Evaluation Frameworks
+### Open Source Frameworks
 
-#### Core Frameworks
-- **[DeepEval](https://github.com/confident-ai/deepeval)** - Production-grade G-Eval implementation, 10M+ metrics/month
-- **[Ragas](https://github.com/explodinggradients/ragas)** - RAG-specific evaluation with pluggable scorers
-- **[TruLens](https://github.com/truera/trulens)** - Feedback functions for chains and agents
-- **[Promptfoo](https://github.com/promptfoo/promptfoo)** - Local-first CLI for prompt evaluation with regression detection
-- **[OpenAI Evals](https://github.com/openai/evals)** - Reference harness with extensive eval registry
+#### Evaluation Libraries
+- **[DeepEval](https://github.com/confident-ai/deepeval)** - Comprehensive evaluation framework with G-Eval implementation and 14+ pre-built metrics
+- **[Ragas](https://github.com/explodinggradients/ragas)** - Specialized for RAG evaluation with reference-free metrics (faithfulness, relevance, context quality)
+- **[TruLens](https://github.com/truera/trulens)** - Custom feedback functions with LangChain/LlamaIndex integration
+- **[Promptfoo](https://github.com/promptfoo/promptfoo)** - CLI tool for prompt testing with cost tracking and regression detection
+- **[OpenAI Evals](https://github.com/openai/evals)** - Reference implementation with 100+ community-contributed evaluations
+- **[LangCheck](https://github.com/citadel-ai/langcheck)** - Simple, composable evaluation metrics for LLM applications
+- **[Athina AI](https://github.com/athina-ai/athina-sdk)** - Configurable evaluation metrics with focus on reliability
 
-#### Observability Platforms
-- **[Langfuse](https://github.com/langfuse/langfuse)** - Open-source tracing, eval dashboards, prompt analytics
-- **[Arize Phoenix](https://github.com/Arize-ai/phoenix)** - OpenTelemetry-native observability for RAG and agents
-- **[Opik](https://github.com/comet-ml/opik)** - Self-hostable evaluation hub with interactive traces
+#### Observability & Monitoring
+- **[Langfuse](https://github.com/langfuse/langfuse)** - Open-source LLM engineering platform with tracing and prompt management
+- **[Langwatch](https://langwatch.ai)** - Real-time quality monitoring with custom evaluators and cost analytics
+- **[Arize Phoenix](https://github.com/Arize-ai/phoenix)** - OpenTelemetry-based observability with embedding visualization
+- **[Opik](https://github.com/comet-ml/opik)** - Self-hostable platform with dataset management and experiment tracking
+- **[Helicone](https://www.helicone.ai/)** - Observability platform with request caching and rate limiting
+- **[Weights & Biases](https://wandb.ai/site)** - ML experiment tracking extended for LLM evaluation
 
-### Commercial Platforms
+### Commercial Solutions
 
-- **[Braintrust](https://www.braintrust.dev/)** - CI-style regression tests with agent sandboxes
-- **[LangSmith](https://smith.langchain.com/)** - Hosted tracing + batched evals for LangChain apps
-- **[Confident AI](https://www.confident-ai.com/)** - DeepEval-backed platform for production monitoring
+#### Evaluation Platforms
+- **[Braintrust](https://www.braintrust.dev/)** - CI/CD for AI with regression testing and agent sandboxes
+- **[LangSmith](https://smith.langchain.com/)** - LangChain's hosted platform for tracing and evaluation
+- **[Confident AI](https://www.confident-ai.com/)** - Production monitoring with scheduled evaluation suites
+- **[HoneyHive](https://www.honeyhive.ai/)** - Enterprise platform with A/B testing and fine-tuning workflows
+- **[Humanloop](https://humanloop.com/)** - Prompt engineering and evaluation with human-in-the-loop
+- **[Galileo](https://www.rungalileo.io/)** - ML observability extended for GenAI applications
 
-### Cloud Platform Services
+### Cloud Services
 
-- **[Amazon Bedrock Evaluations](https://aws.amazon.com/bedrock/evaluations/)** - Managed model and RAG scoring
-- **[Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/)** - Evaluation flows integrated with Prompt Flow
-- **[Vertex AI Evaluation](https://cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview)** - Adaptive rubric-based evaluation
+- **[Amazon Bedrock Evaluations](https://aws.amazon.com/bedrock/evaluations/)** - AWS-native evaluation for foundation models
+- **[Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/)** - Integrated with Azure OpenAI and Prompt Flow
+- **[Vertex AI Evaluation](https://cloud.google.com/vertex-ai/generative-ai/docs/models/evaluation-overview)** - Google Cloud's evaluation service with custom rubrics
+- **[OpenAI Platform](https://platform.openai.com/)** - Built-in evaluation capabilities for GPT models
 
-**Complete List**: [tools-and-platforms.md](tools-and-platforms.md)
+**Detailed Comparison**: [tools-and-platforms.md](tools-and-platforms.md)
 
 ---
 
@@ -544,37 +582,89 @@ Evaluation challenges unique to autonomous and cooperative agents.
 
 ### General Language Understanding
 
-- **[MMLU](https://github.com/hendrycks/test)** - Massive multitask language understanding (57 subjects)
-- **[MMLU-Pro](https://github.com/TIGER-AI-Lab/MMLU-Pro)** - Harder 10-choice variant focused on reasoning
-- **[BIG-bench](https://github.com/google/BIG-bench)** - Collaborative benchmark for diverse reasoning tasks
-- **[HELM](https://crfm.stanford.edu/helm/latest/)** - Holistic evaluation methodology emphasizing multi-criteria scoring
+#### Knowledge & Reasoning
+- **[MMLU](https://github.com/hendrycks/test)** - Massive Multitask Language Understanding across 57 subjects from STEM to humanities
+- **[MMLU-Pro](https://github.com/TIGER-AI-Lab/MMLU-Pro)** - Enhanced version with 10 choices per question, emphasizing reasoning over memorization
+- **[BIG-bench](https://github.com/google/BIG-bench)** - Beyond the Imitation Game with 200+ diverse tasks testing emergent capabilities
+- **[HELM](https://crfm.stanford.edu/helm/latest/)** - Holistic evaluation across 42 scenarios and 7 metrics (accuracy, calibration, robustness, fairness, bias, toxicity, efficiency)
+- **[AGIEval](https://github.com/ruixiangcui/AGIEval)** - Human-centric standardized exams (SAT, LSAT, GRE, GMAT)
+
+#### Common Sense & World Knowledge
+- **[HellaSwag](https://rowanzellers.com/hellaswag/)** - Commonsense natural language inference with adversarial filtering
+- **[WinoGrande](https://winogrande.allenai.org/)** - Large-scale Winograd schema challenge for commonsense reasoning
+- **[ARC](https://allenai.org/data/arc)** - AI2 Reasoning Challenge with grade-school science questions
 
 ### Domain-Specific Benchmarks
 
-**Code**:
-- **[HumanEval](https://github.com/openai/human-eval)** - Unit-test-based code synthesis (164 problems)
-- **[MBPP](https://github.com/google-research/google-research/tree/master/mbpp)** - Mostly Basic Programming Problems (974 problems)
+#### Code Generation
+- **[HumanEval](https://github.com/openai/human-eval)** - Function synthesis with 164 Python problems and unit tests
+- **[MBPP](https://github.com/google-research/google-research/tree/master/mbpp)** - 974 crowd-sourced Python programming problems
+- **[CodeContests](https://github.com/deepmind/code_contests)** - Competitive programming problems from Codeforces, TopCoder
+- **[SWE-bench](https://www.swebench.com/)** - Real GitHub issues requiring repository-level understanding
+- **[DS-1000](https://github.com/xlang-ai/DS-1000)** - Data science problems across NumPy, Pandas, TensorFlow, PyTorch
 
-**Mathematics**:
-- **[MATH](https://github.com/hendrycks/math)** - Competition-level math (12,500 problems)
-- **[GSM8K](https://github.com/openai/grade-school-math)** - Grade school math word problems
+#### Mathematics
+- **[MATH](https://github.com/hendrycks/math)** - 12,500 competition mathematics problems with step-by-step solutions
+- **[GSM8K](https://github.com/openai/grade-school-math)** - 8,500 grade school math word problems
+- **[MINERVA](https://github.com/google-research/google-research/tree/master/minerva)** - STEM problem-solving requiring quantitative reasoning
 
-**Retrieval**:
-- **[BEIR](https://github.com/beir-cellar/beir)** - Benchmark for information retrieval (18 datasets)
-- **[MTEB](https://github.com/embeddings-benchmark/mteb)** - Massive text embedding benchmark
+#### Scientific Understanding
+- **[ScienceQA](https://scienceqa.github.io/)** - Multimodal science questions with explanations
+- **[PubMedQA](https://pubmedqa.github.io/)** - Biomedical research question answering
+- **[MedQA](https://github.com/jind11/MedQA)** - Medical examination questions (USMLE style)
 
-### Agent Benchmarks
+#### Retrieval & RAG
+- **[BEIR](https://github.com/beir-cellar/beir)** - Heterogeneous benchmark for information retrieval across 18 datasets
+- **[MTEB](https://github.com/embeddings-benchmark/mteb)** - Massive Text Embedding Benchmark with 8 tasks and 58 datasets
+- **[MS MARCO](https://microsoft.github.io/msmarco/)** - Machine reading comprehension with 1M+ real queries
+- **[Natural Questions](https://ai.google.com/research/NaturalQuestions)** - Real Google search queries with Wikipedia answers
 
-- **[AgentBench](https://github.com/THUDM/AgentBench)** - LLMs as agents across simulated domains
-- **[GAIA](https://huggingface.co/datasets/gaia-benchmark/GAIA)** - Tool-use benchmark with grounded reasoning
+### Task-Specific Benchmarks
 
-### Safety Benchmarks
+#### Dialogue & Conversation
+- **[MT-Bench](https://github.com/lm-sys/FastChat/tree/main/fastchat/llm_judge)** - Multi-turn conversation quality assessment
+- **[ChatbotArena](https://chat.lmsys.org/)** - Crowd-sourced pairwise model comparisons
+- **[DialogSum](https://github.com/cylnlp/dialogsum)** - Dialogue summarization dataset
 
-- **[TruthfulQA](https://github.com/sylinrl/TruthfulQA)** - Hallucination and factuality measurement
-- **[BBQ](https://github.com/nyu-mll/BBQ)** - Bias benchmark for QA
-- **[ToxiGen](https://github.com/microsoft/ToxiGen)** - Toxic language generation and detection
+#### Translation & Multilingual
+- **[WMT](https://www.statmt.org/wmt23/)** - Annual shared tasks in machine translation
+- **[FLORES-200](https://github.com/facebookresearch/flores)** - Translation between 200 languages
+- **[XL-Sum](https://github.com/csebuetnlp/xl-sum)** - Multilingual abstractive summarization
 
-**Complete List**: [benchmarks.md](benchmarks.md)
+#### Agent & Tool Use
+- **[AgentBench](https://github.com/THUDM/AgentBench)** - Comprehensive agent evaluation across 8 environments
+- **[GAIA](https://huggingface.co/datasets/gaia-benchmark/GAIA)** - General AI assistants with real-world questions requiring tools
+- **[WebArena](https://webarena.dev/)** - Autonomous web agents in realistic environments
+- **[ToolBench](https://github.com/OpenBMB/ToolBench)** - Tool learning with 16,000+ real-world APIs
+
+### Safety & Alignment Benchmarks
+
+#### Truthfulness & Hallucination
+- **[TruthfulQA](https://github.com/sylinrl/TruthfulQA)** - Measures whether models generate truthful answers to questions
+- **[HaluEval](https://github.com/RUCAIBox/HaluEval)** - Hallucination evaluation across diverse tasks
+- **[FActScore](https://github.com/shmsw25/FActScore)** - Fine-grained atomic fact verification
+
+#### Bias & Fairness
+- **[BBQ](https://github.com/nyu-mll/BBQ)** - Bias Benchmark for Question Answering in ambiguous contexts
+- **[BOLD](https://github.com/amazon-science/bold)** - Bias in Open-ended Language Generation Dataset
+- **[WinoBias](https://github.com/uclanlp/corefBias)** - Gender bias in coreference resolution
+
+#### Safety & Toxicity
+- **[ToxiGen](https://github.com/microsoft/ToxiGen)** - Large-scale machine-generated toxicity dataset
+- **[RealToxicityPrompts](https://github.com/allenai/real-toxicity-prompts)** - Toxic generation evaluation
+- **[SafetyBench](https://github.com/thu-coai/SafetyBench)** - Chinese and English safety evaluation
+
+### Creating Custom Benchmarks
+
+When standard benchmarks don't fit your needs:
+
+1. **Define Clear Evaluation Criteria**: Specify what success looks like
+2. **Create Diverse Test Cases**: Cover edge cases and failure modes
+3. **Establish Ground Truth**: Use expert annotations or automated validation
+4. **Version Control**: Track benchmark changes over time
+5. **Statistical Rigor**: Ensure sufficient sample size and significance testing
+
+**Guide**: [docs/creating-custom-benchmarks.md](docs/creating-custom-benchmarks.md)
 
 ---
 
@@ -681,6 +771,72 @@ fast_metric = GEval(
 def cached_evaluate(input_hash, output_hash):
     return metric.measure(test_case)
 ```
+
+---
+
+## Resources
+
+### Learning Materials
+
+#### Tutorials & Guides
+- **[LLM Evaluation: A Practical Guide](https://www.deeplearning.ai/short-courses/evaluating-debugging-generative-ai/)** - DeepLearning.AI course on evaluation fundamentals
+- **[A Survey on Evaluation of LLMs](https://arxiv.org/abs/2307.03109)** - Comprehensive academic survey (2024)
+- **[Holistic Evaluation of LLMs](https://crfm.stanford.edu/helm/latest/)** - Stanford's HELM methodology and learnings
+- **[RAG Evaluation Guide](https://docs.ragas.io/en/latest/)** - Best practices for evaluating retrieval-augmented generation
+- **[Prompt Engineering Guide](https://www.promptingguide.ai/)** - Includes evaluation strategies for prompts
+
+#### Papers & Research
+- **[G-Eval Paper (2023)](https://arxiv.org/abs/2303.16634)** - NLG evaluation using GPT-4 with chain-of-thought
+- **[SCORE Framework (2025)](https://arxiv.org/abs/2503.00137)** - NVIDIA's consistency and robustness evaluation
+- **[Judging LLM-as-a-Judge (2024)](https://arxiv.org/abs/2306.05685)** - Meta-evaluation of LLM judges
+- **[Constitutional AI (2022)](https://arxiv.org/abs/2212.08073)** - Anthropic's approach to AI safety evaluation
+
+### Implementation Examples
+
+#### Code Repositories
+- **[LangChain Evaluation](https://github.com/langchain-ai/langchain/tree/master/libs/langchain/langchain/evaluation)** - Evaluation chains and criteria
+- **[OpenAI Cookbook](https://github.com/openai/openai-cookbook)** - Practical examples including evaluation techniques
+- **[Hugging Face Evaluate](https://github.com/huggingface/evaluate)** - Library for easily evaluating ML models and datasets
+- **[Microsoft Promptflow](https://github.com/microsoft/promptflow)** - Evaluation flows for LLM applications
+
+#### Notebooks & Demos
+- **[Colab: LLM Evaluation Basics](examples/notebooks/evaluation_basics.ipynb)** - Interactive introduction
+- **[RAG Evaluation Notebook](examples/notebooks/rag_evaluation.ipynb)** - Step-by-step RAG metrics
+- **[Custom Metrics Creation](examples/notebooks/custom_metrics.ipynb)** - Building domain-specific evaluations
+
+### Communities & Discussions
+
+#### Forums & Groups
+- **[r/MachineLearning](https://www.reddit.com/r/MachineLearning/)** - Academic ML discussions including evaluation
+- **[Hugging Face Forums](https://discuss.huggingface.co/)** - Community discussions on model evaluation
+- **[LangChain Discord](https://discord.gg/langchain)** - Active community for LLM application development
+- **[AI Alignment Forum](https://www.alignmentforum.org/)** - Safety and alignment evaluation discussions
+
+#### Conferences & Workshops
+- **[NeurIPS Datasets and Benchmarks Track](https://neurips.cc/Conferences/2024/CallForDatasetsBenchmarks)** - Annual benchmark proposals
+- **[EMNLP Evaluation Track](https://2024.emnlp.org/)** - NLP evaluation methodologies
+- **[ACL Workshop on Evaluation](https://aclanthology.org/)** - Specialized evaluation workshops
+
+### Related Collections
+
+#### Awesome Lists
+- **[Awesome LLM](https://github.com/Hannibal046/Awesome-LLM)** - Comprehensive LLM resources
+- **[Awesome RAG](https://github.com/siat-nlp/awesome-rag)** - RAG-specific tools and papers
+- **[Awesome LLM Safety](https://github.com/ydli-ai/csl)** - Safety evaluation and alignment
+- **[Awesome Production LLM](https://github.com/jihoo-kim/awesome-production-llm)** - Production deployment including monitoring
+
+#### Benchmark Leaderboards
+- **[Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)** - Hugging Face's model rankings
+- **[LMSYS Chatbot Arena](https://chat.lmsys.org/)** - Human preference rankings
+- **[Big Code Leaderboard](https://huggingface.co/spaces/bigcode/bigcode-models-leaderboard)** - Code generation benchmarks
+- **[MTEB Leaderboard](https://huggingface.co/spaces/mteb/leaderboard)** - Text embedding rankings
+
+### Industry Reports & Case Studies
+
+- **[State of AI Report](https://www.stateof.ai/)** - Annual industry overview including evaluation trends
+- **[OpenAI System Card](https://cdn.openai.com/papers/gpt-4-system-card.pdf)** - GPT-4 evaluation methodology
+- **[Anthropic Claude Evaluations](https://www.anthropic.com/news/claude-constitution)** - Constitutional AI evaluation approach
+- **[Google PaLM Technical Report](https://arxiv.org/abs/2204.02311)** - Comprehensive evaluation across 150+ tasks
 
 ---
 
