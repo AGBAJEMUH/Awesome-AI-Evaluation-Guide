@@ -140,6 +140,31 @@ npm install -g promptfoo
 
 ---
 
+#### agenttrace
+**Repository**: https://github.com/luoyuctl/agenttrace
+
+**What it does**: Local-first TUI and CLI for evaluating AI coding agent session history
+
+**Key Features**:
+- Cost, token, and elapsed-time tracking across coding agents
+- Health scores and CI regression gates for agent sessions
+- Slow-run diagnostics for latency gaps, failed tools, retries, and context pressure
+- JSON, Markdown, and self-contained HTML reports
+- Works with local Claude Code, Codex CLI, Gemini CLI, Aider, Cursor exports, and similar logs
+
+**When to use**:
+- You need to evaluate AI coding agent runs after execution
+- You want local trace analysis without uploading private logs
+- You need cost and latency regression checks in CI
+- You compare multiple coding agents across real sessions
+
+**Installation**:
+```bash
+brew install luoyuctl/tap/agenttrace
+```
+
+---
+
 #### TruLens
 **Repository**: https://github.com/truera/trulens
 
@@ -481,6 +506,11 @@ pip install arize-phoenix
 - You want local-first evaluation
 - You need cost tracking
 - You prefer CLI + dashboard
+
+**Choose agenttrace if**:
+- You need local trace analysis for AI coding agent sessions
+- You want cost, latency, and health regression gates in CI
+- You compare multiple coding agents from real local logs
 
 **Choose TruLens if**:
 - You need custom feedback functions
