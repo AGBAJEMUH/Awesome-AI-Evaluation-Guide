@@ -274,6 +274,32 @@ Comprehensive reference for evaluating LLMs, RAG systems, agents, and domain-spe
 
 ---
 
+### ClawBench
+**Repository**: https://github.com/TIGER-AI-Lab/ClawBench
+
+**Paper**: https://arxiv.org/abs/2604.08523
+
+**What it measures**: End-to-end browser-agent task completion on live consumer websites
+
+**Format**: Agents operate instrumented Chromium sessions in isolated containers
+
+**Size**: V1 has 153 tasks across 144 websites; V2 has 130 tasks
+
+**Evidence captured**:
+- Session replay video
+- Action screenshots
+- Browser actions
+- HTTP traffic
+- Agent messages
+
+**Evaluation**: Post-session PASS/FAIL comparison with human reference trajectories
+
+**Why it matters**: Tests real, changing websites while preserving replayable evidence
+
+**Use when**: Evaluating browser agents on everyday online workflows
+
+---
+
 ### GAIA (General AI Assistants)
 **Dataset**: https://huggingface.co/datasets/gaia-benchmark/GAIA
 
